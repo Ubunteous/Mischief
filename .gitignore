@@ -1,0 +1,8 @@
+.env
+*.json
+.cpcache
+.direnv
+.lsp
+.nrepl-port
+.cache
+.clj-kondo/imports
