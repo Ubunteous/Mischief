@@ -1,0 +1,72 @@
+{:paths ["src" "res"]
+
+ :deps
+ {;; org.clojure/clojure {:mvn/version "1.12.0"}
+  ;;;;;;;;;;
+  ;; RING ;;
+  ;;;;;;;;;;
+
+  ring/ring-core {:mvn/version "1.13.0"}
+  ring/ring-jetty-adapter {:mvn/version "1.13.0"}
+
+  ;; integrant/integrant {:mvn/version "0.13.1"}
+
+  ;;;;;;;;;;;;;;;;;;
+  ;; HTTP/ROUTING ;;
+  ;;;;;;;;;;;;;;;;;;
+
+  ;; http-kit/http-kit {:mvn/version "2.3.0"}
+  metosin/reitit-ring {:mvn/version "0.7.2"}
+
+  ;;;;;;;;;;;
+  ;; LANGS ;;
+  ;;;;;;;;;;;
+
+  hiccup/hiccup {:mvn/version "2.0.0-RC4"}
+  com.github.seancorfield/honeysql {:mvn/version "2.6.1230"}
+  ;; io.simpleui/simpleui {:mvn/version "1.6.0"}
+
+  ;;;;;;;;;;;;;;
+  ;; POSTGRES ;;
+  ;;;;;;;;;;;;;;
+
+  com.github.seancorfield/next.jdbc {:mvn/version "1.3.981"}
+  org.postgresql/postgresql {:mvn/version "42.7.4"}
+  com.zaxxer/HikariCP {:mvn/version "6.2.1"}
+  io.github.cdimascio/dotenv-java {:mvn/version "3.1.0"} ;; read env vars
+
+  ;;;;;;;;;;
+  ;; JSON ;;
+  ;;;;;;;;;;
+
+  ;; cheshire/cheshire {:mvn/version "5.13.0"}
+  ;; org.clojure/data.json {:mvn/version "2.5.1"}
+
+  ;;;;;;;;;
+  ;; LOG ;;
+  ;;;;;;;;;
+
+  org.clojure/tools.logging {:mvn/version "1.3.0"}
+  org.slf4j/slf4j-simple {:mvn/version "2.0.16"}
+
+  ;;;;;;;;;;
+  ;; MISC ;;
+  ;;;;;;;;;;
+
+  ;; org.clj-commons/pretty {:mvn/version "3.3.0"}
+  ;; metasoarous/oz {:mvn/version "2.0.0-alpha5"}
+  ;; io.github.clojure/tools.build {:git/tag "v0.10.6" :git/sha "52cf7d6"}
+  }
+
+ :aliases {:dev {:extra-paths ["dev" "test"]
+                 :extra-deps {;; nrepl/nrepl {:mvn/version "1.3.0"}}
+
+			      ;;;;;;;;;;;
+			      ;; TESTS ;;
+			      ;;;;;;;;;;;
+
+                              ;; midje/midje {:mvn/version "1.10.10"}
+			      ;; org.clojure/test.check {:mvn/version "1.1.1"}
+                              lambdaisland/kaocha {:mvn/version "1.91.1392"}}}
+           :format {:deps {dev.weavejester/cljfmt {:mvn/version "0.13.0"}}}
+           :lint   {:deps {clj-kondo/clj-kondo {:mvn/version "2024.11.14"}}}}}
