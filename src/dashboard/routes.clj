@@ -16,6 +16,15 @@
    (root-routes/routes system)
    (utils-routes/routes system)])
 
+(defn log-access
+  [request]
+  (log/info (str
+             "\nSalut mon loulou! Ça toque au "
+             (:uri request)
+             " avec du "
+             (:request-method request)
+             "\n")))
+
 (defn not-found-handler
   [_request]
   {:status 404
@@ -26,15 +35,6 @@
      [:html
       [:body
        [:h1 "Error 404: Page Not Found"]]]))})
-
-(defn log-access
-  [request]
-  (log/info (str
-             "\nSalut mon loulou! Ça toque au "
-             (:uri request)
-             " avec du "
-             (:request-method request)
-             "\n")))
 
 ;; use currying to either compiled per-request
 ;; or just provide the system to pre-compile
@@ -48,5 +48,5 @@
                   #'not-found-handler)]
      ;; anonymous function named for explicit stacktraces
      (fn main-handler [request]
-       (log/info (str (:request-method request) " - " (:uri request)))
+       (log-access request)
        (handler request)))))
