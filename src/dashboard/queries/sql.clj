@@ -57,20 +57,41 @@
    (hiccup/html
     (page-html/view)
     [:style
-     "table, th, td {border: 1px solid black;} \nh1 {color: blue;}"]
+     "html, body {height: 100%;}\n
+      html {display: table; margin: auto;}\n
+      body {display: table-cell; vertical-align: middle;}\n
+      table, th, td {border: 1px solid black;}\n
+      h1 {color: blue;}"]
 
-    [:h1 (str "List")]
+    [:h1 (str "Table")]
 
     [:table
      [:tbody
-
       ;; categories
       [:tr
-       (for [row (map symbol (keys (first rows)))]
-         (into [:th] (map string/capitalize (rest (string/split (str row) #"/")))))]
-
+       (for [categories (map symbol (keys (first rows)))]
+         (into [:th]
+               (map string/capitalize
+                    (rest (string/split (str categories) #"/")))))]
       ;; content
       (for [row rows]
-        [:tr
-         (for [r row]
-           (into [:th] (or (last r) "null")))])]])))
+        (into [:tr]
+              (map #(into [:th] (str %))
+                   (replace {nil "null"} (vals row)))))]])))
+
+(defn to-html-graph
+  [rows]
+  (let [axis (for [cols (keys (first rows))] (map cols rows))]
+
+    ;; (graph/view
+    (graph/save
+     (chart/bar-chart
+      (first axis)
+      (second axis))
+     ;; (FileOutputStream. "res/myplot.png"))
+     "res/myplot.png")
+
+    (str
+     (hiccup/html
+      [:h1 (str "Image")]
+      [:img {:src "/myplot.png"}]))))
