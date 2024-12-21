@@ -5,6 +5,11 @@
   [& _]
   (response/resource-response "/favicon.ico"))
 
+(defn plot-handler
+  [& _]
+  (response/resource-response "/myplot.png"))
+
 (defn routes
   [_]
-  [["/favicon.ico" favicon-ico-handler]])
+  [["/favicon.ico" favicon-ico-handler]
+   ["/myplot.png" plot-handler]])
