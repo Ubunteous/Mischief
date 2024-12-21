@@ -49,6 +49,16 @@
   org.clojure/tools.logging {:mvn/version "1.3.0"}
   org.slf4j/slf4j-simple {:mvn/version "2.0.16"}
 
+  ;;;;;;;;;;;;;;
+  ;; INCANTER ;;
+  ;;;;;;;;;;;;;;
+
+  ;; incanter needs a few fixes
+  org.bouncycastle/bcprov-jdk15on {:mvn/version "1.70"}
+  net.mikera/core.matrix {:mvn/version "0.63.0"}
+  incanter/incanter {:mvn/version "1.9.3"
+                     :exclusions [bouncycastle/bctsp-jdk14]}
+
   ;;;;;;;;;;
   ;; MISC ;;
   ;;;;;;;;;;
