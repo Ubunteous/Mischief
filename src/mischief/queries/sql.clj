@@ -14,17 +14,22 @@
 
 ;; (set! *warn-on-reflection* true)
 
+(def db-users {:select [:usename]
+               :from [:pg_user]})
+
+(def db-schemas {:select [:schema_name]
+                 :from [:information_schema.schemata]})
+
+(def db-names {:select [:datname]
+               :from [:pg_database]})
+
 (def characters {:select [:*]
-                 :from   [:story.chars]
-                 :order-by [[:chars.name :asc]]})
+                 :from   [:story.characters]
+                 :order-by [[:story.characters.name :asc]]})
 
-(def char-school {:select [:chars.name :chars.school]
-                  :from   [:story.chars]
-                  :order-by [[:chars.name :asc]]})
-
-(def char-age {:select [:chars.name :chars.age]
-               :from   [:story.chars]
-               :order-by [[:chars.name :asc]]})
+(def char-school {:select [:characters.name :characters.school]
+                  :from   [:story.characters]
+                  :order-by [[:characters.name :asc]]})
 
 (defn select
   [db query]
