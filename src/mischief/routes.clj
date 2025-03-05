@@ -1,12 +1,12 @@
-(ns dashboard.routes
+(ns mischief.routes
   (:require [clojure.tools.logging :as log]
-            [dashboard.root.routes :as root-routes]
-            [dashboard.static.routes :as static-routes]
-            [dashboard.system :as-alias system] ;; avoid cycle deps
-            [dashboard.utils.routes :as utils-routes]
             ;; [clojure.pprint :as pp]
             ;; [clojure.string :as string]
             [hiccup2.core :as hiccup]
+            [mischief.root.routes :as root-routes]
+            [mischief.static.routes :as static-routes]
+            [mischief.system :as-alias system] ;; avoid cycle deps
+            [mischief.utils.routes :as utils-routes]
             [reitit.ring :as reitit-ring]))
 
 (defn routes

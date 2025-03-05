@@ -18,7 +18,7 @@ shadow-watch-frontend:
 	npx shadow-cljs watch frontend
 
 run:
-	clj -M -m dashboard.main
+	clj -M -m mischief.main
 
 format_check:
     clojure -M:format -m cljfmt.main check src dev test

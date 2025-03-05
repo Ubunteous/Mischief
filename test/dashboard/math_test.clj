@@ -1,4 +1,4 @@
-(ns dashboard.math-test
+(ns mischief.math-test
   (:require [clojure.test :as test]))
 
 (test/deftest one-plus-one

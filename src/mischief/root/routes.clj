@@ -1,7 +1,7 @@
-(ns dashboard.root.routes
+(ns mischief.root.routes
   (:require
-   [dashboard.queries.sql :as query]
-   [dashboard.system :as-alias system] ;; avoid cycle deps
+   [mischief.queries.sql :as query]
+   [mischief.system :as-alias system] ;; avoid cycle deps
    ))
 
 (defn root-handler
@@ -15,7 +15,7 @@
       (query/hello)
       (query/to-html-list characters)
       (query/to-html-table characters)
-      (query/to-graph characters-ages))}))
+      (query/to-html-graph characters-ages))}))
 
 ;; partial serves to provide system to handlers
 ;; f(system, request) -> response becomes f(request) -> response

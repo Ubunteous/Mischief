@@ -1,4 +1,4 @@
-(ns dashboard.shared-html.core)
+(ns mischief.shared-html.core)
 
 (defn view [& {:keys [body title]
                :or {title "The Website"}}]

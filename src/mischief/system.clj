@@ -1,5 +1,5 @@
-(ns dashboard.system
-  (:require [dashboard.routes :as routes]
+(ns mischief.system
+  (:require [mischief.routes :as routes]
             [next.jdbc.connection :as connection]
             [ring.adapter.jetty :as jetty])
   (:import (com.zaxxer.hikari HikariDataSource)

@@ -1,10 +1,10 @@
-(ns dashboard.queries.sql
+(ns mischief.queries.sql
   (:require [clojure.string :as string]
-            [dashboard.shared-html.core :as page-html]
             [hiccup2.core :as hiccup]
             [honey.sql :as sql]
             [incanter.charts :as chart]
             [incanter.core :as graph]
+            [mischief.shared-html.core :as page-html]
             [next.jdbc :as jdbc])
 
   ;; (:import (java.io FileOutputStream

@@ -1,7 +1,8 @@
-(ns dashboard.utils.routes
-  (:require [dashboard.shared-html.core :as page-html]
-            [dashboard.system :as-alias system] ;; avoid cycle deps
-            [hiccup2.core :as hiccup]))
+(ns mischief.utils.routes
+  (:require [hiccup2.core :as hiccup]
+            [mischief.shared-html.core :as page-html]
+            [mischief.system :as-alias system] ;; avoid cycle deps
+            ))
 
 (defn utils-handler
   [_system _request]

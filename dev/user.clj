@@ -1,5 +1,5 @@
 (ns user
-  (:require [dashboard.system :as system]))
+  (:require [mischief.system :as system]))
 
 (def system nil)
 
