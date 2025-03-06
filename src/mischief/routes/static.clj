@@ -1,4 +1,4 @@
-(ns mischief.static.routes
+(ns mischief.routes.static
   (:require [ring.util.response :as response]))
 
 (defn favicon-ico-handler

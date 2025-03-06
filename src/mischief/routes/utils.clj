@@ -1,6 +1,6 @@
-(ns mischief.utils.routes
+(ns mischief.routes.utils
   (:require [hiccup2.core :as hiccup]
-            [mischief.shared-html.core :as page-html]
+            [mischief.html.core :as page-html]
             [mischief.system :as-alias system] ;; avoid cycle deps
             ))
 

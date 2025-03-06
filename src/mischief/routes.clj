@@ -3,10 +3,11 @@
             ;; [clojure.pprint :as pp]
             ;; [clojure.string :as string]
             [hiccup2.core :as hiccup]
-            [mischief.root.routes :as root-routes]
-            [mischief.static.routes :as static-routes]
+            ;; routes
+            [mischief.routes.root :as root-routes]
+            [mischief.routes.static :as static-routes]
+            [mischief.routes.utils :as utils-routes]
             [mischief.system :as-alias system] ;; avoid cycle deps
-            [mischief.utils.routes :as utils-routes]
             [reitit.ring :as reitit-ring]))
 
 (defn routes
@@ -36,7 +37,7 @@
       [:body
        [:h1 "Error 404: Page Not Found"]]]))})
 
-;; use currying to either compiled per-request
+;; use currying to either compile per-request
 ;; or just provide the system to pre-compile
 (defn main-handler
   ([system request]
