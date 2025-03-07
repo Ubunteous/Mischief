@@ -6,3 +6,4 @@
 .nrepl-port
 .cache
 .clj-kondo/imports
+*.png
