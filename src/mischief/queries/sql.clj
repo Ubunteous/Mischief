@@ -8,16 +8,19 @@
 ;; ADMIN QUERIES ;;
 ;;;;;;;;;;;;;;;;;;;
 
-(def db-time {:select [:current_date]})
-
-(def db-users {:select [:usename]
-               :from [:pg_user]})
-
-(def db-schemas {:select [:schema_name]
-                 :from [:information_schema.schemata]})
-
-(def db-names {:select [:datname]
+(def database {:select [:datname]
                :from [:pg_database]})
+
+(def time {:select [:current_date]})
+
+(def users {:select [:usename]
+            :from [:pg_user]})
+
+(def schemas {:select [:schema_name]
+              :from [:information_schema.schemata]})
+
+(def names {:select [:datname]
+            :from [:pg_database]})
 
 ;;;;;;;;;;;;;;;;;;;
 ;; ALTER QUERIES ;;
