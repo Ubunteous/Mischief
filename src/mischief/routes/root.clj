@@ -14,9 +14,9 @@
      :body
      (concat
       (presentation/hello)
-      (presentation/to-html-list "Characters" characters)
-      (presentation/to-html-table characters)
-      (presentation/to-html-graph char-age))}))
+      (presentation/make-list "Characters" characters)
+      (presentation/make-table "Characters" characters)
+      (presentation/make-bar-chart char-age))}))
 
 (defn admin-handler
   [{::system/keys [db]} _request]
@@ -25,8 +25,11 @@
    :body
    (concat
     (presentation/hello)
-
-    (map presentation/to-html-list
+	;;
+    (for [table (query/bin db)]
+      (presentation/make-table (concat "Table: " (:name table)) (:content table)))
+	;;
+    (map presentation/make-list
          ["Time" "Users" "Character Names" "DB Schemas" "DB"]
          (map (partial query/select db)
               [query/dbtime query/users query/names query/schemas query/database])))})

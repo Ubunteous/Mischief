@@ -1,8 +1,5 @@
 (ns mischief.routes.utils
-  (:require [hiccup2.core :as hiccup]
-            [mischief.presentation.html :as presentation]
-            [mischief.system :as-alias system] ;; avoid cycle deps
-            ))
+  (:require [mischief.system :as-alias system])) ;; avoid cycle deps
 
 (defn utils-handler
   [_system _request]

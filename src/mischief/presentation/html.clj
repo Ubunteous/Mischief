@@ -26,7 +26,7 @@
 ;; HTML GENERATION ;;
 ;;;;;;;;;;;;;;;;;;;;;
 
-(defn to-html-list
+(defn make-list
   [title rows]
   (str
    (hiccup/html
@@ -38,8 +38,8 @@
             " - "
             (remove nil? (vals row)))]))))
 
-(defn to-html-table
-  [rows]
+(defn make-table
+  [name rows]
   (str
    (hiccup/html
     (presentation/view)
@@ -50,7 +50,7 @@
       table, th, td {border: 1px solid black;}\n
       h1 {color: blue;}"]
 
-    [:h1 (str "Table")]
+    [:h1 name]
 
     [:table
      [:body
@@ -66,7 +66,7 @@
               (map #(into [:th] (str %))
                    (replace {nil "null"} (vals row)))))]])))
 
-(defn to-html-graph
+(defn make-bar-chart
   [rows]
   (let [axis (for [cols (keys (first rows))] (map cols rows))]
 
