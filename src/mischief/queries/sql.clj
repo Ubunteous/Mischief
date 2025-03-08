@@ -22,6 +22,20 @@
 (def names {:select [:datname]
             :from [:pg_database]})
 
+(def tables {:select [:schemaname :tablename :tableowner]
+             :from [:pg_catalog.pg_tables]
+             :where [:= :schemaname "story"]})
+
+(def columns {:select [:table_name :column_name
+                       :column_default :udt_name]
+              :from [:information_schema.columns]
+              :where [:= :table_schema "story"]})
+
+(defn table-columns [table]
+  {:select [:column_name :column_default :udt_name]
+   :from [:information_schema.columns]
+   :where [:= :table_name table]})
+
 ;;;;;;;;;;;;;;;;;;;
 ;; ALTER QUERIES ;;
 ;;;;;;;;;;;;;;;;;;;
@@ -46,3 +60,14 @@
   (jdbc/execute!
    db
    (sql/format query)))
+
+(defn bin
+  [db]
+
+  (let [tables-names
+        (for [row (select db tables)]
+          (:pg_tables/tablename row))]
+
+    (for [table tables-names]
+      {:name table
+       :content (select db (table-columns table))})))
