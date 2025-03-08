@@ -8,15 +8,18 @@
 (defn root-handler
   [{::system/keys [db]} _request]
   (let  [characters (query/select db query/characters)
-         char-age (query/select db query/ages)]
+         char-ages (query/select db query/ages)
+         age-wealth (query/select db query/age-wealth)]
     {:status 200
      :headers {"Content-Type" "text/html"}
      :body
      (concat
-      (presentation/hello)
-      (presentation/make-list "Characters" characters)
-      (presentation/make-table "Characters" characters)
-      (presentation/make-bar-chart char-age))}))
+      ;; (presentation/hello)
+      (presentation/make-list "Characters List" characters)
+      (presentation/make-table "Characters Table" characters)
+      ;; (presentation/make-bar-chart char-ages)
+      ;; (presentation/make-line-chart age-wealth)
+      )}))
 
 (defn admin-handler
   [{::system/keys [db]} _request]
@@ -24,7 +27,7 @@
    :headers {"Content-Type" "text/html"}
    :body
    (concat
-    (presentation/hello)
+    ;; (presentation/hello)
 	;;
     (for [table (query/bin db)]
       (presentation/make-table (concat "Table: " (:name table)) (:content table)))

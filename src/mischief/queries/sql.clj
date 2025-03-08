@@ -51,6 +51,14 @@
 (def ages {:select [:story.characters.name :story.characters.age]
            :from [:story.characters]})
 
+(def is-wizard {:select [:story.characters.name
+                         :story.characters.isWizard]
+                :from [:story.characters]})
+
+(def age-wealth {:select [:story.characters.age
+                          :story.characters.wealth]
+                 :from [:story.characters]})
+
 ;;;;;;;;;
 ;; SQL ;;
 ;;;;;;;;;
