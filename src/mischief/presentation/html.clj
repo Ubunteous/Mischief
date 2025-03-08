@@ -27,6 +27,13 @@
 ;; HTML GENERATION ;;
 ;;;;;;;;;;;;;;;;;;;;;
 
+(defn show-res
+  [name path]
+  (str
+   (hiccup/html
+    [:h1 name]
+    [:img {:src path}])))
+
 (defn make-list
   [title rows]
   (str
@@ -44,42 +51,42 @@
   (str
    (hiccup/html
     (presentation/view)
-    [:style
-     "html, body {height: 100%;}\n
-      html {display: table; margin: auto;}\n
-      body {display: table-cell; vertical-align: middle;}\n
-      table, th, td {border: 1px solid black;}\n
-      h1 {color: blue;}"]
-
     [:h1 name]
 
-    [:table
-     [:body
-      ;; categories
-      [:tr
-       (for [categories (map symbol (keys (first rows)))]
-         (into [:th]
-               (map string/capitalize
-                    (rest (string/split (str categories) #"/")))))]
-      ;; content
-      (for [row rows]
-        (into [:tr]
-              (map #(into [:th] (str %))
-                   (replace {nil "null"} (vals row)))))]])))
+    [:div
+     [:table
+      [:body
+       ;; categories
+       [:tr
+        (for [categories (map symbol (keys (first rows)))]
+          (into [:th]
+                (map string/capitalize
+                     (rest (string/split (str categories) #"/")))))]
+       ;; content
+       (for [row rows]
+         (into [:tr]
+               (let [replace-symbol {true "X" false "_" nil "null"}]
+                 (map #(into [:th] (or (replace-symbol %) (str %)))
+                      (vals row)))))]]])))
 
 (defn make-bar-chart
   [rows]
   (let [axis (for [cols (keys (first rows))] (map cols rows))]
 
-    ;; (graph/view
     (graph/save
      (chart/bar-chart
       (first axis)
       (second axis))
-     ;; (FileOutputStream. "res/myplot.png"))
-     "res/myplot.png")
+     "res/myplot.png"))
+  (show-res "Bar Chart" "/myplot.png"))
 
-    (str
-     (hiccup/html
-      [:h1 (str "Image")]
-      [:img {:src "/myplot.png"}]))))
+(defn make-line-chart
+  [rows]
+  (let [axis (for [cols (keys (first rows))] (map cols rows))]
+
+    (graph/save
+     (chart/line-chart
+      (first axis)
+      (second axis))
+     "res/myplot.png"))
+  (show-res "Line Chart" "/myplot.png"))
