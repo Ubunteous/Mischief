@@ -1,21 +1,22 @@
 (ns mischief.routes.root
   (:require
+   [mischief.presentation.html :as presentation]
    [mischief.queries.sql :as query]
    [mischief.system :as-alias system] ;; avoid cycle deps
    ))
 
 (defn root-handler
   [{::system/keys [db]} _request]
-  (let  [characters (query/select db query/characters)]
+  (let  [characters (query/select db query/characters)
+         char-age (query/select db query/ages)]
     {:status 200
      :headers {"Content-Type" "text/html"}
      :body
      (concat
-      (query/hello)
-      (query/to-html-list characters)
-      (query/to-html-table characters)
-	  ;; (query/to-html-graph numeric-values)
-      )}))
+      (presentation/hello)
+      (presentation/to-html-list "Characters" characters)
+      (presentation/to-html-table characters)
+      (presentation/to-html-graph char-age))}))
 
 (defn admin-handler
   [{::system/keys [db]} _request]
@@ -23,12 +24,12 @@
    :headers {"Content-Type" "text/html"}
    :body
    (concat
-    (query/hello)
+    (presentation/hello)
 
-    (map query/to-html-list
+    (map presentation/to-html-list
          ["Time" "Users" "Character Names" "DB Schemas" "DB"]
          (map (partial query/select db)
-              [query/time query/users query/names query/schemas query/database])))})
+              [query/dbtime query/users query/names query/schemas query/database])))})
 
 ;; partial serves to provide system to handlers
 ;; f(system, request) -> response becomes f(request) -> response

@@ -13,8 +13,8 @@
 (defn routes
   [system]
   [""
-   (static-routes/routes system)
    (root-routes/routes system)
+   (static-routes/routes system)
    (utils-routes/routes system)])
 
 (defn log-access

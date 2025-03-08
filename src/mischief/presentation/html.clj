@@ -1,8 +1,10 @@
-(ns mischief.html.core
-  (require [clojure.string :as string]
-           [hiccup2.core :as hiccup]
-           [incanter.charts :as chart]
-           [incanter.core :as graph]))
+(ns mischief.presentation.html
+  (:require
+   [clojure.string :as string]
+   [hiccup2.core :as hiccup]
+   [incanter.charts :as chart]
+   [incanter.core :as graph]
+   [mischief.presentation.html :as presentation]))
 
 (defn view [& {:keys [body title]
                :or {title "The Website"}}]
@@ -17,7 +19,7 @@
   []
   (str
    (hiccup/html
-    (page-html/view)
+    (presentation/view)
     [:h1 (str "Hello")])))
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -28,7 +30,7 @@
   [title rows]
   (str
    (hiccup/html
-    (page-html/view)
+    (presentation/view)
     [:h1 title]
 
     (for [row rows]
@@ -40,7 +42,7 @@
   [rows]
   (str
    (hiccup/html
-    (page-html/view)
+    (presentation/view)
     [:style
      "html, body {height: 100%;}\n
       html {display: table; margin: auto;}\n
@@ -51,7 +53,7 @@
     [:h1 (str "Table")]
 
     [:table
-     [:tbody
+     [:body
       ;; categories
       [:tr
        (for [categories (map symbol (keys (first rows)))]

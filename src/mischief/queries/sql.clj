@@ -11,7 +11,7 @@
 (def database {:select [:datname]
                :from [:pg_database]})
 
-(def time {:select [:current_date]})
+(def dbtime {:select [:current_date]})
 
 (def users {:select [:usename]
             :from [:pg_user]})
@@ -30,9 +30,12 @@
                  :from   [:story.characters]
                  :order-by [[:story.characters.name :asc]]})
 
-(def char-school {:select [:characters.name :characters.school]
-                  :from   [:story.characters]
-                  :order-by [[:characters.name :asc]]})
+;; (def char-school {:select [:story.characters.name :characters.school]
+;;                   :from   [:story.characters]
+;;                   :order-by [[:characters.name :asc]]})
+
+(def ages {:select [:story.characters.name :story.characters.age]
+           :from [:story.characters]})
 
 ;;;;;;;;;
 ;; SQL ;;

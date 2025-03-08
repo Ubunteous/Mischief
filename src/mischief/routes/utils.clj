@@ -1,6 +1,6 @@
 (ns mischief.routes.utils
   (:require [hiccup2.core :as hiccup]
-            [mischief.html.core :as page-html]
+            [mischief.presentation.html :as presentation]
             [mischief.system :as-alias system] ;; avoid cycle deps
             ))
 
@@ -9,9 +9,10 @@
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body
-   (str
-    (hiccup/html
-     (page-html/view :body [:h1 "Goodbye, world"])))})
+   ;; (str
+   ;; (hiccup/html
+   ;; (presentation/view :body [:h1 "Goodbye, world"])))
+   "a"})
 
 ;; partial serves to provide system to handlers
 ;; f(system, request) -> response becomes f(request) -> response
