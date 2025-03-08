@@ -9,7 +9,12 @@
   [& _]
   (response/resource-response "/myplot.png"))
 
+(defn css-handler
+  [& _]
+  (response/resource-response "/stylesheet.css"))
+
 (defn routes
   [_]
   [["/favicon.ico" favicon-ico-handler]
-   ["/myplot.png" plot-handler]])
+   ["/myplot.png" plot-handler]
+   ["/stylesheet.css" css-handler]])
