@@ -7,19 +7,19 @@
 
 (defn root-handler
   [{::system/keys [db]} _request]
-  (let  [characters (query/select db query/characters)
-         char-ages (query/select db query/ages)
-         age-wealth (query/select db query/age-wealth)]
+  (let  [characters (query/select db query/characters)]
     {:status 200
      :headers {"Content-Type" "text/html"}
      :body
      (concat
-      ;; (presentation/hello)
       (presentation/make-list "Characters List" characters)
       (presentation/make-table "Characters Table" characters)
-      ;; (presentation/make-bar-chart char-ages)
-      ;; (presentation/make-line-chart age-wealth)
-      )}))
+	  ;;
+      ;; (presentation/show-res "Bar Chart" "/myplot.png")
+      ;; (presentation/show-res "Line Chart" "/myplot.png"))	  
+	  ;;
+      (presentation/show-res "Chart" "/myplot.png")
+      (presentation/make-form "post" "/refresh" "Refresh graphs"))}))
 
 (defn admin-handler
   [{::system/keys [db]} _request]
@@ -27,8 +27,6 @@
    :headers {"Content-Type" "text/html"}
    :body
    (concat
-    ;; (presentation/hello)
-	;;
     (for [table (query/bin db)]
       (presentation/make-table (concat "Table: " (:name table)) (:content table)))
 	;;
