@@ -1,5 +1,6 @@
 (ns mischief.main
-  (:require [mischief.system :as system]))
+  (:require [mischief.system :as system])
+  (:gen-class))
 
-(defn -main []
+(defn -main [& args]
   (system/start-system))
