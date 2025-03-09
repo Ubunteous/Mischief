@@ -34,6 +34,13 @@
     [:h1 name]
     [:img {:src path}])))
 
+(defn make-content
+  [content]
+  (str
+   (hiccup/html
+    (presentation/view)
+    content)))
+
 (defn make-list
   [title rows]
   (str

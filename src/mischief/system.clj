@@ -10,6 +10,12 @@
 
 (defn start-env
   []
+  ;; the .env file contains:
+  ;; ENVIRONMENT=development
+  ;; POSTGRES_DBNAME=<secret>
+  ;; POSTGRES_USERNAME=<secret>
+  ;; POSTGRES_PASSWORD=<secret>
+  ;; PORT=<num>
   (Dotenv/load))
 
 (defn start-db
