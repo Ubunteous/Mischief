@@ -28,5 +28,14 @@ build-uber:
 run-uberjar:
 	java -jar target/mischief-*-standalone.jar
 
+build-container:
+	podman build -t mischief .
+
+show-containers:
+	podman images | grep mischief
+
+run-container:
+	podman run -p 9999:9999/tcp localhost/mischief
+
 reload-direnv:
 	nix-direnv-reload
