@@ -32,10 +32,22 @@ build-container:
 	podman build -t mischief .
 
 show-containers:
+	podman ps --all
+
+show-images:
 	podman images | grep mischief
+
+remove-images:
+	podman rmi --force --all
 
 run-container:
 	podman run -p 9999:9999/tcp localhost/mischief
+
+stop-container:
+	podman stop -all
+
+deploy: build-uber build-container run-container
+	build-uber && build-container && run-container
 
 reload-direnv:
 	nix-direnv-reload
