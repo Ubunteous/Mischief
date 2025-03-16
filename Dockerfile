@@ -10,6 +10,7 @@ WORKDIR /app
 
 # Copy only the target jar over
 COPY target/*.jar .
+COPY .env .
 
 # Run the JAR
 CMD java -jar *.jar
