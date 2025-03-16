@@ -68,3 +68,7 @@ deploy: build-uber build-container run-container
 [group('Misc')]
 reload-direnv:
 	nix-direnv-reload
+
+[group('Misc')]
+outdated-deps:
+    clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}}' -M -m antq.core
