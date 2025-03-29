@@ -5,21 +5,29 @@
    [mischief.system :as-alias system] ;; avoid cycle deps
    ))
 
+(set! *warn-on-reflection* true)
+
 (defn root-handler
   [{::system/keys [db]} _request]
-  (let  [characters (query/select db query/characters)]
+  (let  [characters
+         (query/select db query/characters)
+         sorted-characters
+         (query/order-columns
+          characters [:name :school :age :iswizard])]
     {:status 200
      :headers {"Content-Type" "text/html"}
      :body
-     (concat
-      (presentation/make-list "Characters List" characters)
-      (presentation/make-table "Characters Table" characters)
-	  ;;
-      ;; (presentation/show-res "Bar Chart" "/myplot.png")
-      ;; (presentation/show-res "Line Chart" "/myplot.png"))	  
-	  ;;
-      (presentation/show-res "Chart" "/myplot.png")
-      (presentation/make-form "post" "/refresh" "Refresh graphs"))}))
+     (try
+       (concat
+        (presentation/make-list "Characters List" sorted-characters)
+        (presentation/make-table "Characters Table" sorted-characters)
+        (presentation/show-res "Bar Chart" "/myplot.png")
+        (presentation/show-res "Line Chart" "/myplot.png")
+        (presentation/show-res "Chart" "/myplot.png")
+        (presentation/make-form "post" "/refresh" "Refresh graphs"))
+       (catch Exception e
+         (concat "Error caught while generating html: "
+                 (.getMessage e))))}))
 
 (defn admin-handler
   [{::system/keys [db]} _request]

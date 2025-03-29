@@ -1,11 +1,13 @@
 (ns mischief.routes.utils
-  (:require [mischief.presentation.graphs :as graphs]
-            [mischief.queries.sql :as query]
-            [mischief.system :as-alias system] ;; avoid cycle deps
-            [ring.util.response :as response]))
+  (:require
+   [mischief.presentation.graphs :as graphs]
+   [mischief.queries.sql :as query]
+   [mischief.system :as-alias system] ;; avoid cycle deps
+   [ring.util.response :as response]))
 
 (defn utils-handler
-  [_system _request]
+  ;; [_system _request]
+  [{::system/keys [db]} _request]
   {:status 200
    :headers {"Content-Type" "text/html"}
    :body
@@ -16,10 +18,12 @@
 
 (defn refresh-graphs-handler
   [{::system/keys [db]} _request]
-
   (let [char-ages (query/select db query/ages)
-        age-wealth (query/select db query/age-wealth)]
-    (graphs/save-bar-chart char-ages)
+        ;; age-wealth (query/select db query/age-wealth)
+        sorted-char-ages
+        (query/order-columns
+         char-ages [:name :school :age :iswizard])]
+    (graphs/save-bar-chart sorted-char-ages)
     ;; (graphs/save-line-chart age-wealth)
     (response/redirect "/")))
 

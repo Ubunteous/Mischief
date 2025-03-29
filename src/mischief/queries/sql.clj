@@ -1,6 +1,9 @@
 (ns mischief.queries.sql
-  (:require [honey.sql :as sql]
-            [next.jdbc :as jdbc]))
+  (:require
+   ;; [honey.sql :as sql]
+   ;; [next.jdbc :as jdbc]
+   ;; [pg.core as pg]
+   [pg.honey :as pgh]))
 
 ;; (set! *warn-on-reflection* true)
 
@@ -26,10 +29,10 @@
              :from [:pg_catalog.pg_tables]
              :where [:= :schemaname "story"]})
 
-(def columns {:select [:table_name :column_name
-                       :column_default :udt_name]
-              :from [:information_schema.columns]
-              :where [:= :table_schema "story"]})
+;; (def columns {:select [:table_name :column_name
+;;                        :column_default :udt_name]
+;;               :from [:information_schema.columns]
+;;               :where [:= :table_schema "story"]})
 
 (defn table-columns [table]
   {:select [:column_name :column_default :udt_name]
@@ -63,18 +66,23 @@
 ;; SQL ;;
 ;;;;;;;;;
 
+(defn order-columns
+  [source column-order]
+  (map #(select-keys % column-order)
+       source))
+
 (defn select
   [db query]
-  (jdbc/execute!
-   db
-   (sql/format query)))
+  ;; (jdbc/execute! db (sql/format query) ;; for jdbc)
+  (pgh/execute db query))
 
 (defn bin
   [db]
 
   (let [tables-names
         (for [row (select db tables)]
-          (:pg_tables/tablename row))]
+          ;; (:pg_tables/tablename row) ;; for jdbc
+          (:tablename row))]
 
     (for [table tables-names]
       {:name table

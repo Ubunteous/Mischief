@@ -1,10 +1,14 @@
 (ns mischief.system
-  (:require [mischief.routes :as routes]
-            [next.jdbc.connection :as connection]
-            [ring.adapter.jetty :as jetty])
-  (:import (com.zaxxer.hikari HikariDataSource)
-           (io.github.cdimascio.dotenv Dotenv)
-           (org.eclipse.jetty.server Server)))
+  (:require
+   [mischief.routes :as routes]
+   ;; [next.jdbc.connection :as connection]
+   [pg.core :as pg]
+   [pg.pool :as pool]
+   [ring.adapter.jetty :as jetty])
+  (:import
+   ;; (com.zaxxer.hikari HikariDataSource)
+   (io.github.cdimascio.dotenv Dotenv)
+   (org.eclipse.jetty.server Server)))
 
 (set! *warn-on-reflection* true)
 
@@ -18,17 +22,44 @@
   ;; PORT=<num>
   (Dotenv/load))
 
+;;;;;;;;;;;;
+;; CLJ DB ;;
+;;;;;;;;;;;;
+
 (defn start-db
   [{::keys [env]}]
-  (connection/->pool HikariDataSource
-                     {:dbtype "postgres"
-                      :dbname (Dotenv/.get env "POSTGRES_DBNAME")
-                      :username (Dotenv/.get env "POSTGRES_USERNAME")
-                      :password (Dotenv/.get env "POSTGRES_PASSWORD")}))
+  (pg/pool
+   {:host (Dotenv/.get env "POSTGRES_HOST")
+    :port (Integer. (Dotenv/.get env "POSTGRES_PORT"))
+    :user (Dotenv/.get env "POSTGRES_USERNAME")
+    :password (Dotenv/.get env "POSTGRES_PASSWORD")
+    :database (Dotenv/.get env "POSTGRES_DBNAME")}))
 
 (defn stop-db
   [db]
-  (HikariDataSource/.close db))
+  (pg/close db))
+
+;; ;;;;;;;;;;;;;
+;; ;; JAVA DB ;;
+;; ;;;;;;;;;;;;;
+
+;; (defn start-db
+;;   [{::keys [env]}]
+;;   (connection/->pool HikariDataSource
+;;                      {:dbtype "postgres"
+;;                       :dbname (Dotenv/.get env "POSTGRES_DBNAME")
+;;                       :username (Dotenv/.get env "POSTGRES_USERNAME")
+;;                       :password (Dotenv/.get env "POSTGRES_PASSWORD")
+;;                       ;; :connectionTestQuery false
+;;                       }))
+
+;; (defn stop-db
+;;   [db]
+;;   (HikariDataSource/.close db))
+
+;;;;;;;;;;;;
+;; SERVER ;;
+;;;;;;;;;;;;
 
 (defn start-server
   [{::keys [env] :as system}]
@@ -45,6 +76,10 @@
 (defn stop-server
   [server]
   (Server/.stop server))
+
+;;;;;;;;;;;;
+;; SYSTEM ;;
+;;;;;;;;;;;;
 
 (defn start-system
   []

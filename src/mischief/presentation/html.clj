@@ -67,8 +67,10 @@
         (for [categories (map symbol (keys (first rows)))]
           (into [:th]
                 (map string/capitalize
-                     (rest (string/split (str categories) #"/")))))]
-       ;; content
+                     ;; (rest (string/split (str categories) #"/"))) ;; jdbc
+                     (str categories))))]
+
+	   ;; content
        (for [row rows]
          (into [:tr]
                (let [replace-symbol {true "X" false "_" nil "null"}]
