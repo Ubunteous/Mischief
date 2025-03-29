@@ -1,3 +1,9 @@
 { pkgs ? import <nixpkgs> { } }:
 
-pkgs.mkShell { packages = with pkgs; [ just jdk podman ]; }
+pkgs.mkShell {
+  packages = with pkgs; [
+    just
+    jdk
+    # podman
+  ];
+}

@@ -30,7 +30,7 @@ build-jar:
 	clj -T:build jar
 
 [group('Build')]
-build-uber:
+build-uberjar:
 	clj -T:build uber
 
 [group('Run')]
@@ -62,8 +62,8 @@ stop-container:
 	podman stop -all
 
 [group('Misc')]
-deploy: build-uber build-container run-container
-	build-uber && build-container && run-container
+deploy: build-uberjar build-container run-container
+	build-uberjar && build-container && run-container
 
 [group('Misc')]
 reload-direnv:
