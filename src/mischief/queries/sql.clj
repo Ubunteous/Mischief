@@ -1,5 +1,6 @@
 (ns mischief.queries.sql
   (:require
+   [clojure.string :as str]
    ;; [honey.sql :as sql]
    ;; [next.jdbc :as jdbc]
    ;; [pg.core as pg]
@@ -68,17 +69,25 @@
 
 (defn order-columns
   [source column-order]
-  (map #(select-keys % column-order)
-       source))
+  (into [] (map #(select-keys % column-order)
+                source)))
+
+(defn keyword-end
+  [kw]
+  (keyword (last (str/split (name kw) #"\."))))
 
 (defn select
   [db query]
   ;; (jdbc/execute! db (sql/format query) ;; for jdbc)
-  (pgh/execute db query))
+  (let [result (pgh/execute db query)
+        select (get query :select)]
+    (if (not (or (nil? select)
+                 (= [:*] select)))
+      (order-columns result (map keyword-end select))
+      result)))
 
 (defn bin
   [db]
-
   (let [tables-names
         (for [row (select db tables)]
           ;; (:pg_tables/tablename row) ;; for jdbc
