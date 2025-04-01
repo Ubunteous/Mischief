@@ -9,18 +9,14 @@
 
 (defn root-handler
   [{::system/keys [db]} _request]
-  (let  [characters
-         (query/select db query/characters)
-         sorted-characters
-         (query/order-columns
-          characters [:name :school :age :iswizard])]
+  (let  [characters (query/select db query/characters)]
     {:status 200
      :headers {"Content-Type" "text/html"}
      :body
      (try
        (concat
-        (presentation/make-list "Characters List" sorted-characters)
-        (presentation/make-table "Characters Table" sorted-characters)
+        (presentation/make-list "Characters List" characters)
+        (presentation/make-table "Characters Table" characters)
         (presentation/show-res "Bar Chart" "/myplot.png")
         (presentation/show-res "Line Chart" "/myplot.png")
         (presentation/show-res "Chart" "/myplot.png")

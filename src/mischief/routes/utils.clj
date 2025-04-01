@@ -20,10 +20,8 @@
   [{::system/keys [db]} _request]
   (let [char-ages (query/select db query/ages)
         ;; age-wealth (query/select db query/age-wealth)
-        sorted-char-ages
-        (query/order-columns
-         char-ages [:name :school :age :iswizard])]
-    (graphs/save-bar-chart sorted-char-ages)
+        ]
+    (graphs/save-bar-chart char-ages)
     ;; (graphs/save-line-chart age-wealth)
     (response/redirect "/")))
 

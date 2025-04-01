@@ -38,8 +38,8 @@
   ;; Alternatives
   ;; hikari-cp/hikari-cp {:mvn/version "3.2.0"}
   ;; org.clojure/java.jdbc {:mvn/version "0.7.12"}
-  com.github.igrishaev/pg2-core {:mvn/version "0.1.35"}
-  com.github.igrishaev/pg2-honey {:mvn/version "0.1.35"}
+  com.github.igrishaev/pg2-core {:mvn/version "0.1.36"}
+  com.github.igrishaev/pg2-honey {:mvn/version "0.1.36"}
   ;; com.github.igrishaev/pg2-migration {:mvn/version "0.1.35"}
 
   ;;;;;;;;;;

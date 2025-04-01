@@ -3,10 +3,7 @@
    [clojure.string :as str]
    ;; [honey.sql :as sql]
    ;; [next.jdbc :as jdbc]
-   ;; [pg.core as pg]
    [pg.honey :as pgh]))
-
-;; (set! *warn-on-reflection* true)
 
 ;;;;;;;;;;;;;;;;;;;
 ;; ADMIN QUERIES ;;
@@ -67,24 +64,10 @@
 ;; SQL ;;
 ;;;;;;;;;
 
-(defn order-columns
-  [source column-order]
-  (into [] (map #(select-keys % column-order)
-                source)))
-
-(defn keyword-end
-  [kw]
-  (keyword (last (str/split (name kw) #"\."))))
-
 (defn select
-  [db query]
   ;; (jdbc/execute! db (sql/format query) ;; for jdbc)
-  (let [result (pgh/execute db query)
-        select (get query :select)]
-    (if (not (or (nil? select)
-                 (= [:*] select)))
-      (order-columns result (map keyword-end select))
-      result)))
+  [db query]
+  (pgh/execute db query))
 
 (defn bin
   [db]
