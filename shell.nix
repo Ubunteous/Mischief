@@ -5,5 +5,6 @@ pkgs.mkShell {
     just
     jdk
     # podman
+    babashka
   ];
 }
