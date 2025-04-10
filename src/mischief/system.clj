@@ -3,7 +3,7 @@
    [mischief.routes :as routes]
    ;; [next.jdbc.connection :as connection]
    [pg.core :as pg]
-   [pg.pool :as pool]
+   ;; [pg.pool :as pool]
    [ring.adapter.jetty :as jetty])
   (:import
    ;; (com.zaxxer.hikari HikariDataSource)
@@ -38,6 +38,10 @@
 (defn stop-db
   [db]
   (pg/close db))
+
+(defn start-db-only
+  []
+  (start-db {::env (start-env)}))
 
 ;; ;;;;;;;;;;;;;
 ;; ;; JAVA DB ;;
