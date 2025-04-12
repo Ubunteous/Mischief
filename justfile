@@ -9,17 +9,21 @@ format_check:
 format:
     clojure -M:format -m cljfmt.main fix src dev test
 
-[group('Run')]
-test:
-	clojure -M:dev -m kaocha.runner
-
 [group('Format')]
 lint:
 	clojure -M:lint -m clj-kondo.main --lint .
 
 [group('Run')]
+test:
+	clojure -M:dev -m kaocha.runner
+
+[group('Run')]
 run:
 	clj -M -m mischief.main
+
+[group('Run')]
+run-babashka:
+	bb src/minion/main.clj
 
 [group('Build')]
 build-clean:
@@ -59,7 +63,7 @@ run-container:
 
 [group('Container')]
 stop-container:
-	podman stop -all
+	podman stop -all	
 
 [group('Misc')]
 deploy: build-uberjar build-container run-container
