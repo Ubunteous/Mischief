@@ -1,27 +1,19 @@
 #!/usr/bin/env bb
 
-(require '[pod.babashka.postgresql :as pg])
-(require '[honey.sql :as hsql])
+(ns minion.main
+  (:require [babashka.cli :as cli]
+            [minion.parts.subcmd :as subcmd]))
 
-(def env (into {}
-               (map (fn [pair]
-                      (let [[k v] (clojure.string/split pair #"=")]
-                        [(keyword k) v]))
-                    (clojure.string/split (slurp ".env") #"\n"))))
+(def table
+  [{:cmds ["create"] :fn subcmd/create-table :args->opts [:table]}
+   ;; {:cmds ["create" "table"]
+   ;;  :fn subcmd/create-table
+   ;;  :args->opts [:target]
+   ;;  :spec {:target {:validate (and (partial subcmd/file-exists? "csv")
+   ;;                                 partial subcmd/file-exists? "edn")}}}
+   {:cmds ["select"] :fn subcmd/select :args->opts [:table]}
+   {:cmds ["update"] :fn subcmd/update :args->opts [:table]}
+   {:cmds [] :fn subcmd/help}])
 
-(def db {:dbtype   "postgresql"
-         :host     (:POSTGRES_HOST env)
-         :dbname   (:POSTGRES_DBNAME env)
-         :user     (:POSTGRES_USERNAME env)
-         :password (:POSTGRES_PASSWORD env)
-         :port     (Integer/parseInt (:POSTGRES_PORT env))})
-
-(let [[command target] *command-line-args*]
-  (when (nil? command)
-    (prn "No command provided")
-    (System/exit 1))
-
-  (case command
-    "create" (prn "table-name")
-    "update" (prn "table-name")
-    (println "Unknown command:"  command)))
+(let [args *command-line-args*]
+  (cli/dispatch table args))
