@@ -1,4 +1,4 @@
- {:paths ["."]
-  ;; :tasks {start (shell "bb src/minion/main.clj")}
+ {:paths ["src"]
+  :tasks {start (shell "bb src/minion/main.clj")}
   :deps {com.github.seancorfield/honeysql {:mvn/version "2.7.1295"}}
   :pods {org.babashka/postgresql {:version "0.1.4"}}}
