@@ -15,5 +15,4 @@
    {:cmds ["update"] :fn subcmd/update :args->opts [:table]}
    {:cmds [] :fn subcmd/help}])
 
-(let [args *command-line-args*]
-  (cli/dispatch table args))
+(cli/dispatch table *command-line-args*)
