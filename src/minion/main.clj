@@ -5,9 +5,7 @@
             [minion.parts.subcmd :as subcmd]))
 
 (def table
-  [
-   ;; {:cmds ["create"] :fn subcmd/create-table :args->opts [:table]}
-   ;; {:cmds ["create" "table"]
+  [;; {:cmds ["create" "table"]
    ;;  :fn subcmd/create-table
    ;;  :args->opts [:target]
    ;;  :spec {:target {:validate (and (partial subcmd/file-exists? "csv")
