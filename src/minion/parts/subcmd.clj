@@ -34,9 +34,9 @@
 
     (db/upsert
      table-name
-     (db/replace-foreign-keys
+     (db/swap-foreign-with-ids
       (map col-type-converter (fio/process-csv-keys csv-input))
-      (db/get-foreign-cols table-name)))
+      table-name))
 
     (println "\nTransaction Complete:")
     (clean-pprint (db/select-all table-name))))

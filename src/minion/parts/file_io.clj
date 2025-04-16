@@ -20,9 +20,9 @@
 (defn csv-data->maps [csv-data]
   (map zipmap
        (->>
-        (first csv-data) ;; header
-						 (map keyword) ;; drop string keys
-									   repeat)
+        (first csv-data)
+        (map keyword)
+        repeat)
        (rest csv-data)))
 
 ;;;;;;;;;

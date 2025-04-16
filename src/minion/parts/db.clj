@@ -1,5 +1,6 @@
 (ns minion.parts.db
-  (:require [clojure.string]
+  (:require [clojure.set]
+            [clojure.string]
             [honey.sql :as hsql]
             [minion.parts.file-io :as fio]
             [pod.babashka.postgresql :as pg]))
@@ -28,38 +29,13 @@
 ;;                                         [:= :table_schema "story"]
 ;;                                         [:= :table_name table]]})))))
 
-;;;;;;;;;;;;
-;; SELECT ;;
-;;;;;;;;;;;;
+;;;;;;;;;
+;; GET ;;
+;;;;;;;;;
 
 (defn select
   [query]
   (pg/execute! args (hsql/format query)))
-
-(defn upsert
-  [table query]
-  (let [cols (into [] (keys (first query)))]
-    (pg/execute! args
-                 (hsql/format
-                  {:insert-into [(symbol table)]
-                   :values query
-                   :on-conflict :name :do-update-set cols
-                   :returning :*}))))
-
-(defn select-all
-  [table]
-  (try
-    (pg/execute! args (hsql/format {:select [:*] :from [(symbol table)]}))
-    (catch Exception e
-      (println "\nCould not find table" table ". Try one of these instead:\n"
-               (map :tables/table_name
-                    (pg/execute! args (hsql/format {:select [:table_name]
-                                                    :from [:information_schema.tables]
-                                                    :where [:= :table_schema "story"]})))))))
-
-;;;;;;;;;
-;; GET ;;
-;;;;;;;;;
 
 (defn get-foreign-cols
   [table]
@@ -86,6 +62,77 @@
                 :from [:information_schema.columns]
                 :where [:= :table_name table]}))))
 
+;;;;;;;;;;;;
+;; SELECT ;;
+;;;;;;;;;;;;
+
+(defn id-to-foreign-name
+  [table]
+  (let [foreign-data (select {:select [:id :name] :from [(symbol table)]})]
+    (apply merge (map
+                  (fn [m] (apply hash-map (vals m)))
+                  foreign-data))))
+
+(defn replace-foreign-key [table foreign-col query]
+  (let [foreign-key (keyword table (name foreign-col))]
+    (map (fn [row]
+           (assoc row foreign-key
+                  ((id-to-foreign-name (name foreign-key))
+                   (row foreign-key))))
+         query)))
+
+(defn replace-foreign-keys [query table]
+  (reduce
+   (fn [acc key]
+     (replace-foreign-key table key acc))
+   query
+   (get-foreign-cols table)))
+
+(defn select-all
+  [table]
+  (try
+    (let [query (pg/execute! args (hsql/format {:select [:*] :from [(symbol table)]}))]
+      (replace-foreign-keys query table))
+
+    (catch Exception e
+      (println "\nError:" e "\nCould not find table" table ". Try one of these instead:\n"
+               (map :tables/table_name
+                    (pg/execute! args (hsql/format {:select [:table_name]
+                                                    :from [:information_schema.tables]
+                                                    :where [:= :table_schema "story"]})))))))
+
+;;;;;;;;;;;;
+;; UPDATE ;;
+;;;;;;;;;;;;
+
+(defn name-to-foreign-id
+  [table]
+  (clojure.set/map-invert (id-to-foreign-name table)))
+
+(defn swap-foreign-with-id [foreign-key query]
+  (map (fn [row]
+         (assoc row foreign-key
+                ((name-to-foreign-id (name foreign-key))
+                 (row foreign-key))))
+       query))
+
+(defn swap-foreign-with-ids [query table]
+  (reduce
+   (fn [acc key]
+     (swap-foreign-with-id key acc))
+   query
+   (get-foreign-cols table)))
+
+(defn upsert
+  [table query]
+  (let [cols (into [] (keys (first query)))]
+    (pg/execute! args
+                 (hsql/format
+                  {:insert-into [(symbol table)]
+                   :values query
+                   :on-conflict :name :do-update-set cols
+                   :returning :*}))))
+
 ;;;;;;;;;;;;;;;;;
 ;; PRE-PROCESS ;;
 ;;;;;;;;;;;;;;;;;
@@ -103,23 +150,3 @@
   (into {} (map (fn [[k f]]
                   [k (f (get value-map k))])
                 func-map)))
-
-;; two strategies kept just in case
-;; the second one supposedly works when there are multiple foreign keys
-(defn replace-foreign-keys [hash-maps foreign-keys]
-  (let [single-foreign-key? (= (count foreign-keys) 1)
-        table (when single-foreign-key?
-                (name (first foreign-keys)))
-        query (when single-foreign-key?
-                (into {} (map (juxt (keyword table "name") (keyword table "id"))
-                              (select {:select [:name :id] :from [(symbol table)]}))))]
-    (map (fn [m]
-           (reduce (fn [acc k]
-                     (if (contains? acc k)
-                       (assoc acc k
-                              (if single-foreign-key?
-                                (query (k m))
-                                {:select [:id] :from [k] :where [:= :name (str (k acc))]}))
-                       acc))
-                   m foreign-keys))
-         hash-maps)))
