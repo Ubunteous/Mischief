@@ -83,15 +83,14 @@
 
 (defn replace-foreign-keys [query table]
   (reduce
-   (fn [acc key]
-     (replace-foreign-key table key acc))
+   (fn [acc key] (replace-foreign-key table key acc))
    query
    (get-foreign-cols table)))
 
 (defn select-all
   [table]
   (try
-    (let [query (pg/execute! args (hsql/format {:select [:*] :from [(symbol table)]}))]
+    (let [query (pg/execute! args (hsql/format {:select [:*] :from [(symbol table)] :order-by [:id]}))]
       (replace-foreign-keys query table))
 
     (catch Exception e
@@ -118,8 +117,7 @@
 
 (defn swap-foreign-with-ids [query table]
   (reduce
-   (fn [acc key]
-     (swap-foreign-with-id key acc))
+   (fn [acc key] (swap-foreign-with-id key acc))
    query
    (get-foreign-cols table)))
 
@@ -141,12 +139,19 @@
   [col-types]
   (let [m (dissoc col-types :id)
         f #(case %
-             "integer" (fn [s] (if (re-matches #"\d+" s) (Integer/parseInt s) s))
+             "integer" (fn [s] (if (re-matches #"\d+" s)
+                                 (Integer/parseInt s)
+                                 (clojure.string/trim s)))
              "boolean" (fn [s] (case s "true" true "false" false))
              "character varying" clojure.string/trim)]
     (into {} (map (fn [[k v]] [k (f v)]) m))))
 
 (defn convert-col-types [func-map value-map]
-  (into {} (map (fn [[k f]]
-                  [k (f (get value-map k))])
-                func-map)))
+  (try
+    (into {} (map (fn [[k f]] [k (f (get value-map k))])
+                  func-map))
+    (catch Exception e
+      (println "Error:" (.getMessage e)
+               "\n with keys" (keys func-map)
+               "\n not matching " value-map
+               "\n Difference:" (keys (apply dissoc func-map (keys value-map)))))))
