@@ -1,5 +1,6 @@
 (ns minion.parts.subcmd
   (:require [clojure.pprint]
+            [clojure.pprint :as pprint]
             [minion.parts.db :as db]
             [minion.parts.file-io :as fio]))
 
@@ -18,6 +19,11 @@
   [target]
   (let [table (get-in target [:opts :table])]
     (clean-pprint (db/select-all table))))
+
+(defn get-tables
+  [_target]
+  (clean-pprint
+   (db/select-tables)))
 
 (defn upsert-csv
   [target]

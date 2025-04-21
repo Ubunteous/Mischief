@@ -13,6 +13,7 @@
    {:cmds ["select"] :fn subcmd/select :args->opts [:table]}
    {:cmds ["upsert"] :fn subcmd/upsert-csv :args->opts [:table]}
    {:cmds ["update"] :fn subcmd/upsert-csv :args->opts [:table]}
+   {:cmds ["tables"] :fn subcmd/get-tables}
    {:cmds [] :fn subcmd/help}])
 
 (cli/dispatch table *command-line-args*)

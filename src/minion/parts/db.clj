@@ -37,6 +37,12 @@
   [query]
   (pg/execute! args (hsql/format query)))
 
+(defn select-tables
+  []
+  (select {:select [:table_name]
+           :from [:information_schema.tables]
+           :where [:= :table_schema "story"]}))
+
 (defn get-foreign-cols
   [table]
   (map #(keyword (:key_column_usage/column_name %))
@@ -96,9 +102,7 @@
     (catch Exception e
       (println "\nError:" e "\nCould not find table" table ". Try one of these instead:\n"
                (map :tables/table_name
-                    (pg/execute! args (hsql/format {:select [:table_name]
-                                                    :from [:information_schema.tables]
-                                                    :where [:= :table_schema "story"]})))))))
+                    (select-tables))))))
 
 ;;;;;;;;;;;;
 ;; UPDATE ;;
