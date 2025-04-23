@@ -14,6 +14,8 @@
    {:cmds ["upsert"] :fn subcmd/upsert-csv :args->opts [:table]}
    {:cmds ["update"] :fn subcmd/upsert-csv :args->opts [:table]}
    {:cmds ["tables"] :fn subcmd/get-tables}
+   {:cmds ["backup"] :fn subcmd/backup}
+   {:cmds ["restore"] :fn subcmd/restore}
    {:cmds [] :fn subcmd/help}])
 
 (cli/dispatch table *command-line-args*)

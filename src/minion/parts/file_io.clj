@@ -25,9 +25,14 @@
         repeat)
        (rest csv-data)))
 
-;;;;;;;;;
-;; csv ;;
-;;;;;;;;;
+;;;;;;;;;;;
+;; files ;;
+;;;;;;;;;;;
+
+(defn create-dir-if-missing
+  [path]
+  (when-not (.exists (io/file path))
+    (.mkdir (io/file path))))
 
 (defn check-file-exists
   [path]
@@ -36,6 +41,10 @@
     (println (format "Invalid path: %s\nCalled from: %s" path (System/getProperty "user.dir")))
     (System/exit 1))
   (io/reader path))
+
+;;;;;;;;;
+;; csv ;;
+;;;;;;;;;
 
 (defn read-csv [csv-filename]
   (let [filepath (str res-path "csv/" csv-filename ".csv")]
