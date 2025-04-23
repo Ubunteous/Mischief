@@ -101,5 +101,4 @@
 ;;;;;;;;;;
 
 (defn help [m]
-  ;; also try (cli/dispatch table args)
   (prn "Error with these args:" (assoc m :fn :help)))

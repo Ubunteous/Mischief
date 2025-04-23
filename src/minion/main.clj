@@ -2,6 +2,7 @@
 
 (ns minion.main
   (:require [babashka.cli :as cli]
+            [clojure.string :as string]
             [minion.parts.subcmd :as subcmd]))
 
 (def table
@@ -18,4 +19,10 @@
    {:cmds ["restore"] :fn subcmd/restore}
    {:cmds [] :fn subcmd/help}])
 
-(cli/dispatch table *command-line-args*)
+(let [args *command-line-args*
+      opts (cli/parse-opts args table)]
+  (if (or (contains? opts :h)
+          (contains? opts :help))
+    (println "Commands:"
+             (string/join ", " (butlast (flatten (map :cmds table)))))
+    (cli/dispatch table args)))
