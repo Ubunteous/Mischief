@@ -101,4 +101,4 @@
 ;;;;;;;;;;
 
 (defn help [m]
-  (prn "Error with these args:" (assoc m :fn :help)))
+  (println "Error with these args:" (assoc m :fn :help)))
