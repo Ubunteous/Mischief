@@ -1,5 +1,7 @@
  {:paths ["src"]
-  :tasks {start (shell "bb src/minion/main.clj")}
+  :tasks {do (apply shell
+                    "bb src/minion/main.clj"
+                    *command-line-args*)}
   :deps {com.github.seancorfield/honeysql {:mvn/version "2.7.1295"}
          org.clojure/data.csv {:mvn/version "1.1.0"}}
   :pods {org.babashka/postgresql {:version "0.1.4"}}}
