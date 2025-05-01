@@ -51,7 +51,7 @@
     (check-file-exists filepath)
     (with-open [reader (check-file-exists filepath)]
       (doall
-       (csv-data->maps (csv/read-csv reader))))))
+       (csv-data->maps (csv/read-csv reader :separator \;))))))
 
 (defn process-csv-keys
   [csv-map]
