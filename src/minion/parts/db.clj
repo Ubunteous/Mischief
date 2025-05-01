@@ -33,6 +33,10 @@
 ;; GET ;;
 ;;;;;;;;;
 
+(defn select-raw
+  [query]
+  (pg/execute! args query))
+
 (defn select
   [query]
   (pg/execute! args (hsql/format query)))

@@ -51,6 +51,9 @@
     (println "\nCurrent State:")
     (clean-pprint (db/select-all table-name))
 
+    (let [[{next-seq-id :max}] (db/select {:select [:%max.id] :from [(keyword table-name)]})]
+      (db/select-raw [(str "ALTER SEQUENCE " table-name "_id_seq RESTART WITH " (inc next-seq-id))]))
+
     (db/upsert
      table-name
      (db/swap-foreign-with-ids
