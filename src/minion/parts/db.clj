@@ -147,7 +147,8 @@
                                  (Integer/parseInt s)
                                  (clojure.string/trim s)))
              "boolean" (fn [s] (case s "true" true "false" false))
-             "character varying" clojure.string/trim)]
+             "character varying" clojure.string/trim
+             (fn [_s] (str "Type unknown: " %)))]
     (into {} (map (fn [[k v]] [k (f v)]) m))))
 
 (defn convert-col-types [func-map value-map]
