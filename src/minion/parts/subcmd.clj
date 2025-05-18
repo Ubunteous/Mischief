@@ -42,26 +42,81 @@
   [target]
   (let [table-name (get-in target [:opts :table])
         csv-input (fio/read-csv table-name)
+
         col-type-converter
         (partial
          db/convert-col-types
          (db/get-cols-type-converter
-          (db/get-cols-types table-name)))]
+          (db/get-cols-types table-name)))
+
+        converted-cols
+        (map col-type-converter (fio/process-keys csv-input))]
 
     (println "\nCurrent State:")
     (clean-pprint (db/select-all table-name))
 
-    (let [[{next-seq-id :max}] (db/select {:select [:%max.id] :from [(keyword table-name)]})]
-      (db/select-raw [(str "ALTER SEQUENCE " table-name "_id_seq RESTART WITH " (inc next-seq-id))]))
+    (db/minimise-table-iterator table-name)
 
     (db/upsert
      table-name
      (db/swap-foreign-with-ids
-      (map col-type-converter (fio/process-csv-keys csv-input))
+      converted-cols
       table-name))
 
     (println "\nTransaction Complete:")
     (clean-pprint (db/select-all table-name))))
+
+;;;;;;;;;;;
+;; CROSS ;;
+;;;;;;;;;;;
+
+(defn get-cross-prefix [m]
+  (filter #(string/starts-with? (name %) "X")
+          (keys (if (list? m) (first m) m))))
+
+(defn remove-cross [key]
+  (keyword (string/replace-first (str key) ":X" "")))
+
+(defn cross-split [key table-name data]
+  (let [elements (clojure.string/split (key data) #", ")]
+    (map #(assoc {(keyword table-name) (:Name data)} (remove-cross key) %) elements)))
+
+(defn cross-split-map [key table-name data]
+  (flatten (map (partial cross-split key table-name) data)))
+
+(defn upsert-cross-csv
+  [target]
+  (let [original-table-name (get-in target [:opts :table])
+        csv-input (fio/read-csv original-table-name)]
+
+    (doseq [cross-prefix (get-cross-prefix (first csv-input))]
+      (let [table-name (str original-table-name (string/lower-case (name cross-prefix)))
+
+            col-type-converter
+            (partial
+             db/convert-col-types
+             (db/get-cols-type-converter
+              (db/get-cols-types table-name)))
+
+            converted-cols
+            (map col-type-converter
+                 (fio/process-keys
+                  (cross-split-map cross-prefix original-table-name csv-input)))]
+
+        ;; (println "\nCurrent State:")
+        ;; (clean-pprint (db/select-all table-name))
+
+        ;; (db/minimise-table-iterator table-name)
+
+        (db/cross-upsert
+         table-name
+         (db/swap-foreign-with-ids
+          converted-cols
+          table-name))
+
+        ;; (println "\nCurrent State:")
+        ;; (clean-pprint (db/select-all table-name))
+        ))))
 
 ;;;;;;;;;;;;
 ;; BACKUP ;;

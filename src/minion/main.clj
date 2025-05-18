@@ -14,6 +14,7 @@
    {:cmds ["select"] :fn subcmd/select :args->opts [:table]}
    {:cmds ["upsert"] :fn subcmd/upsert-csv :args->opts [:table]}
    {:cmds ["update"] :fn subcmd/upsert-csv :args->opts [:table]}
+   {:cmds ["cross"] :fn subcmd/upsert-cross-csv :args->opts [:table]}
    {:cmds ["tables"] :fn subcmd/get-tables}
    {:cmds ["backup"] :fn subcmd/backup}
    {:cmds ["restore"] :fn subcmd/restore}

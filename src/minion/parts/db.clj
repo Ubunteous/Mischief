@@ -63,15 +63,6 @@
                  [:= :information_schema.table_constraints.table_schema "story"]
                  [:= :information_schema.table_constraints.table_name table]]})))
 
-(defn get-cols-types
-  [table]
-  (apply merge
-         (map #(hash-map (keyword (:columns/column_name %)) (:columns/data_type %))
-              (select
-               {:select [:column_name :data_type]
-                :from [:information_schema.columns]
-                :where [:= :table_name table]}))))
-
 ;;;;;;;;;;;;
 ;; SELECT ;;
 ;;;;;;;;;;;;
@@ -112,6 +103,12 @@
 ;; UPDATE ;;
 ;;;;;;;;;;;;
 
+(defn minimise-table-iterator
+  [table-name]
+  (let [[{next-seq-id :max}] (select {:select [:%max.id] :from [(keyword table-name)]})]
+    (when next-seq-id
+      (select-raw [(str "ALTER SEQUENCE " table-name "_id_seq RESTART WITH " (inc next-seq-id))]))))
+
 (defn name-to-foreign-id
   [table]
   (clojure.set/map-invert (id-to-foreign-name table)))
@@ -139,9 +136,32 @@
                    :on-conflict :name :do-update-set cols
                    :returning :*}))))
 
+(defn cross-upsert
+  [table query]
+  (println "\nOn conflict behaviour not implemented yet")
+  (prn query)
+  ;; (let [cols (into [] (keys (first query)))]
+  ;;   (pg/execute! args
+  ;;                (hsql/format
+  ;;                 {:insert-into [(symbol table)]
+  ;;                  :values query
+  ;; 				   ;; replace by something else for conflict detection
+  ;;                  ;; :on-conflict :name :do-update-set cols
+  ;;                  :returning :*})))
+  )
+
 ;;;;;;;;;;;;;;;;;
 ;; PRE-PROCESS ;;
 ;;;;;;;;;;;;;;;;;
+
+(defn get-cols-types
+  [table]
+  (apply merge
+         (map #(hash-map (keyword (:columns/column_name %)) (:columns/data_type %))
+              (select
+               {:select [:column_name :data_type]
+                :from [:information_schema.columns]
+                :where [:= :table_name table]}))))
 
 (defn get-cols-type-converter
   [col-types]

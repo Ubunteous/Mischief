@@ -53,7 +53,7 @@
       (doall
        (csv-data->maps (csv/read-csv reader :separator \;))))))
 
-(defn process-csv-keys
+(defn process-keys
   [csv-map]
   (let [rename-keys (fn [m f] (into {} (for [[k v] m] [(f k) v])))
         symbol-lower-case (fn [s] (keyword (clojure.string/lower-case (name s))))]
