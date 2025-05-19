@@ -1,6 +1,6 @@
 (ns minion.parts.db
   (:require [clojure.set]
-            [clojure.string]
+            [clojure.string :as str]
             [honey.sql :as hsql]
             [minion.parts.file-io :as fio]
             [pod.babashka.postgresql :as pg]))
@@ -138,17 +138,19 @@
 
 (defn cross-upsert
   [table query]
-  (println "\nOn conflict behaviour not implemented yet")
-  (prn query)
-  ;; (let [cols (into [] (keys (first query)))]
-  ;;   (pg/execute! args
-  ;;                (hsql/format
-  ;;                 {:insert-into [(symbol table)]
-  ;;                  :values query
-  ;; 				   ;; replace by something else for conflict detection
-  ;;                  ;; :on-conflict :name :do-update-set cols
-  ;;                  :returning :*})))
-  )
+  (let [[first-col second-col] (str/split table #"x")
+        [first-kw second-kw] (map keyword [first-col second-col])]
+
+    (pg/execute! args
+                 [(str "INSERT INTO " table
+                       " (" first-col ", " second-col ")"
+                       " VALUES "
+                       (str/join ","
+                                 (map (fn [q]
+                                        (str "(" (first-kw q) "," (second-kw q) ")"))
+                                      query))
+                       " ON CONFLICT (" first-col ", " second-col
+                       ") DO NOTHING RETURNING *;")])))
 
 ;;;;;;;;;;;;;;;;;
 ;; PRE-PROCESS ;;
@@ -169,9 +171,9 @@
         f #(case %
              "integer" (fn [s] (if (re-matches #"\d+" s)
                                  (Integer/parseInt s)
-                                 (clojure.string/trim s)))
+                                 (str/trim s)))
              "boolean" (fn [s] (case s "true" true "false" false))
-             "character varying" clojure.string/trim
+             "character varying" str/trim
              (fn [_s] (str "Type unknown: " %)))]
     (into {} (map (fn [[k v]] [k (f v)]) m))))
 

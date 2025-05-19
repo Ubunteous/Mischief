@@ -103,10 +103,10 @@
                  (fio/process-keys
                   (cross-split-map cross-prefix original-table-name csv-input)))]
 
-        ;; (println "\nCurrent State:")
-        ;; (clean-pprint (db/select-all table-name))
+        (println "\nCurrent State:")
+        (clean-pprint (db/select-all table-name))
 
-        ;; (db/minimise-table-iterator table-name)
+        (db/minimise-table-iterator table-name)
 
         (db/cross-upsert
          table-name
@@ -114,9 +114,9 @@
           converted-cols
           table-name))
 
-        ;; (println "\nCurrent State:")
-        ;; (clean-pprint (db/select-all table-name))
-        ))))
+        (println "\nCurrent State:")
+        (clean-pprint (db/select-all table-name))
+        (println "\n=========")))))
 
 ;;;;;;;;;;;;
 ;; BACKUP ;;
