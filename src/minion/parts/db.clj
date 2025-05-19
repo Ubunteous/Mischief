@@ -139,18 +139,13 @@
 (defn cross-upsert
   [table query]
   (let [[first-col second-col] (str/split table #"x")
-        [first-kw second-kw] (map keyword [first-col second-col])]
+        query (hsql/format
+               {:insert-into [(symbol table)]
+                :values query})]
 
-    (pg/execute! args
-                 [(str "INSERT INTO " table
-                       " (" first-col ", " second-col ")"
-                       " VALUES "
-                       (str/join ","
-                                 (map (fn [q]
-                                        (str "(" (first-kw q) "," (second-kw q) ")"))
-                                      query))
-                       " ON CONFLICT (" first-col ", " second-col
-                       ") DO NOTHING RETURNING *;")])))
+    (pg/execute! args (flatten
+                       [(str (first query) " ON CONFLICT (" first-col ", " second-col ") DO NOTHING RETURNING *")
+                        (rest query)]))))
 
 ;;;;;;;;;;;;;;;;;
 ;; PRE-PROCESS ;;

@@ -106,7 +106,8 @@
         (println "\nCurrent State:")
         (clean-pprint (db/select-all table-name))
 
-        (db/minimise-table-iterator table-name)
+		;; not needed with ignore
+        ;; (db/minimise-table-iterator table-name)
 
         (db/cross-upsert
          table-name
